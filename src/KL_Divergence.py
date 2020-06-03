@@ -51,4 +51,28 @@ def get_result(data):
             sim = sim+(p1*d1)+(p2*d2)
             u = u+1
         final[key] = sim
+
+    print('all words')
+    print(inn.all_words)
+    
+    print('inverted index')
+    print(inn.inverted_index)
+
+    print('doc_sim_score')
+    print(inn.doc_sim_score)
+
+    print('all_files')
+    print(inn.all_files)
+
+    print('dict_list')
+    print(inn.dict_list)
+
+    print('tfidf query doc')
+    print(inn.tfidf_query_doc)
+
+    print('dict_lem_or_stem')
+    print(inn.dict_lemm_or_stem)
+
+    print('ultimate_sim')
+    print(inn.ultimate_sim)
     return final

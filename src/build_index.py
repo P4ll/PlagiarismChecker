@@ -6,10 +6,12 @@ import re
 import time
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer, PorterStemmer
+import pickle
 
 
 class Index:
     def __init__(self, directory=os.getcwd()):
+        self.base_path = 'models_data/'
         self.directory = 'dataset/corpus'
         self.all_words = []
         self.inverted_index = {}
@@ -20,6 +22,28 @@ class Index:
         self.dict_lemm_or_stem = {}
         self.ultimate_sim = []
         self.stop_words = set(stopwords.words('english'))
+
+    def load_old(self, file):
+        with open(self.base_path + file, 'rb') as f:
+            loader = pickle.load(f)
+            self.all_words = loader['all_words']
+            self.inverted_index = loader['inverted_index']
+            self.doc_sim_score = loader['doc_sim_score']
+            self.all_files = loader['all_files']
+            self.dict_list = loader['dict_list']
+            self.dict_lemm_or_stem = loader['dict_lemm_or_stem']
+
+    def save_data(self, file):
+        with open(self.base_path + file, 'wb') as f:
+            loader = dict()
+
+            loader['all_words'] = self.all_words
+            loader['inverted_index'] = self.inverted_index
+            loader['doc_sim_score'] = self.doc_sim_score
+            loader['all_files'] = self.all_files
+            loader['dict_list'] = self.dict_list
+            loader['dict_lemm_or_stem'] = self.dict_lemm_or_stem
+            pickle.dump(loader, f)
 
     # Function to retrieve all the documents from the directory that is given as a input when a class Input object is initialized
     def retrieve_file(self, file_name=None, encoding="utf-8"):
@@ -36,9 +60,10 @@ class Index:
         #type_op can be a list also in the case when both lemmatization and stemming is to be applied
         # Preprocessing the document and applying Case Folding, rudimernary normalization and spliting string to words and performing lemmitization of stemming based on user input
         self.operation = type_op
+        lemmatizer = WordNetLemmatizer()
+        stemmer = PorterStemmer()
+
         for key in self.all_files.keys():
-            lemmatizer = WordNetLemmatizer()
-            stemmer = PorterStemmer()
             self.dict_list[key] = []
             [self.dict_list[key].append(x) for x in self.all_files[key].lower().split(
                 " ") if x not in self.stop_words if x is not '']
