@@ -1,5 +1,6 @@
 from build_index import Index
 import numpy as np
+import sys
 
 
 def get_result(data):
@@ -52,6 +53,11 @@ def get_result(data):
             u = u+1
         final[key] = sim
 
+    orig_stdout = sys.stdout
+
+    f = open('out.txt', 'w')
+    sys.stdout = f
+
     print('all words')
     print(inn.all_words)
     
@@ -75,4 +81,7 @@ def get_result(data):
 
     print('ultimate_sim')
     print(inn.ultimate_sim)
+
+    sys.stdout = orig_stdout
+    f.close()
     return final
