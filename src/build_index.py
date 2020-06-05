@@ -44,13 +44,27 @@ class Index:
             loader['dict_list'] = self.dict_list
             loader['dict_lemm_or_stem'] = self.dict_lemm_or_stem
             pickle.dump(loader, f)
+            self.retrieve_file()
+
+    def retrive_df(self, df: pd.DataFrame) -> None:
+        """Retrive all data from DataFrame and put into all_files
+
+        Params:
+        df (DataFrame): DataFrame with 2 cols (1 - labels, 2 - main data)
+        """
+        rows_count = len(df.index)
+        for i in range(rows_count):
+            self.all_files[df.iloc[i, 0]] = re.sub(
+                '[^a-zA-Z0-9]', ' ', df.iloc[i, 1].rstrip())
 
     # Function to retrieve all the documents from the directory that is given as a input when a class Input object is initialized
     def retrieve_file(self, file_name=None, encoding="utf-8"):
-        base_path = os.path.join(os.path.abspath(os.path.curdir), self.directory)
+        base_path = os.path.join(os.path.abspath(
+            os.path.curdir), self.directory)
         for _, filename in enumerate(os.listdir(base_path)):
             if filename.endswith(".txt"):
-                f = io.open(os.path.join(base_path, filename), mode="r", encoding=encoding)
+                f = io.open(os.path.join(base_path, filename),
+                            mode="r", encoding=encoding)
                 lines = f.read()
                 self.all_files[filename.replace('.txt', '')] = re.sub(
                     '[^a-zA-Z0-9]', ' ', lines.rstrip())
@@ -117,7 +131,8 @@ class Index:
 
     def calculate_tf_idf(self, test_file=None, encoding_test="utf-8"):
         #Calculate tf-idf score
-        base_path = os.path.join(os.path.abspath(os.path.curdir), self.directory)
+        base_path = os.path.join(os.path.abspath(
+            os.path.curdir), self.directory)
         test_string = self.preprocess_query_doc(
             filename=os.path.join(base_path, test_file), encoding=encoding_test)
         for word in test_string:
